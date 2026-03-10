@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>코이네 헬라어 알파벳 연습</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600;700&family=Cinzel:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #f5ead6;
+    --parchment-dark: #e8d5b0;
+    --ink: #2c1a0e;
+    --ink-light: #5c3d1e;
+    --gold: #c8922a;
+    --gold-light: #e8b84b;
+    --crimson: #8b1a1a;
+    --olive: #4a5e2a;
+    --stone: #7a6a55;
+    --shadow: rgba(44,26,14,0.2);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--ink);
+    min-height: 100vh;
+    color: var(--ink);
+    background-image: 
+      radial-gradient(ellipse at 20% 20%, #3d2010 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, #1a0e05 0%, transparent 50%),
+      linear-gradient(135deg, #2c1a0e 0%, #1a0e05 100%);
+  }
+
+  .page-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 20px;
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+    padding-bottom: max(32px, env(safe-area-inset-bottom));
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .subtitle-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff8ee;
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 4px 16px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(26px, 5vw, 42px);
+    color: var(--parchment);
+    letter-spacing: 2px;
+    line-height: 1.2;
+    text-shadow: 0 2px 12px rgba(200,146,42,0.4);
+  }
+  header p {
+    color: var(--stone);
+    font-size: 13px;
+    margin-top: 8px;
+    letter-spacing: 1px;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 10px;
+    padding: 5px;
+    margin-bottom: 28px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 10px 4px;
+    border: none;
+    background: transparent;
+    color: var(--stone);
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all .2s;
+    font-weight: 500;
+    -webkit-appearance: none;
+    appearance: none;
+    line-height: 1.3;
+  }
+  .tab-btn.active {
+    background: var(--gold);
+    color: #fff8ee;
+    box-shadow: 0 2px 8px rgba(200,146,42,0.5);
+  }
+  .tab-btn:hover:not(.active) { color: var(--parchment); background: rgba(255,255,255,0.06); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── CARD BASE ── */
+  .card {
+    background: var(--parchment);
+    background-image: 
+      url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+    border-radius: 12px;
+    box-shadow: 0 4px 24px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.6);
+    border: 1px solid var(--parchment-dark);
+  }
+
+  /* ─────────────────────────────────────────
+     TAB 1 : 알파벳 표
+  ───────────────────────────────────────── */
+  #tab-table .card { padding: 24px 20px; }
+
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--parchment-dark);
+  }
+
+  .alphabet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+
+  .alpha-card {
+    background: #fff9f0;
+    border: 1px solid var(--parchment-dark);
+    border-radius: 8px;
+    padding: 12px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .18s;
+    position: relative;
+    overflow: hidden;
+  }
+  .alpha-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(200,146,42,0.08), transparent);
+    opacity: 0; transition: opacity .2s;
+  }
+  .alpha-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--shadow); }
+  .alpha-card:hover::before { opacity: 1; }
+  .alpha-card.highlighted { border-color: var(--gold); background: #fef9ec; box-shadow: 0 0 0 2px rgba(200,146,42,0.3); }
+
+  .alpha-num { font-size: 10px; color: var(--stone); margin-bottom: 2px; }
+  .alpha-letter {
+    font-size: 32px;
+    color: var(--crimson);
+    line-height: 1.1;
+    font-family: 'Noto Serif KR', serif;
+    text-shadow: 1px 1px 0 rgba(139,26,26,0.15);
+  }
+  .alpha-capital { font-size: 18px; color: var(--stone); margin: 2px 0; }
+  .alpha-name { font-family: 'Cinzel', serif; font-size: 11px; color: var(--ink); font-weight: 600; }
+  .alpha-sound {
+    font-size: 11px; color: var(--olive); margin-top: 3px;
+    background: rgba(74,94,42,0.1); border-radius: 3px; padding: 1px 5px; display: inline-block;
+  }
+  .alpha-tip { font-size: 10px; color: var(--stone); margin-top: 4px; line-height: 1.4; }
+
+  /* detail popup */
+  .detail-panel {
+    margin-top: 20px;
+    background: #fff9f0;
+    border: 2px solid var(--gold);
+    border-radius: 10px;
+    padding: 20px 24px;
+    display: none;
+    animation: slideIn .2s ease;
+  }
+  .detail-panel.show { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+  @keyframes slideIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+  .detail-big { font-size: 80px; color: var(--crimson); font-family: 'Noto Serif KR', serif; line-height: 1; min-width: 90px; text-align: center; }
+  .detail-info h3 { font-family: 'Cinzel', serif; font-size: 18px; color: var(--ink); }
+  .detail-info .detail-sound { font-size: 14px; color: var(--olive); margin: 4px 0; }
+  .detail-info .detail-memo { font-size: 13px; color: var(--ink-light); line-height: 1.7; margin-top: 6px; }
+  .detail-info .detail-example { margin-top: 10px; font-size: 13px; color: var(--crimson); font-style: italic; }
+
+  /* ─────────────────────────────────────────
+     TAB 2 : 플래시카드
+  ───────────────────────────────────────── */
+  #tab-flash .card { padding: 28px 24px; }
+
+  .flash-controls {
+    display: flex; gap: 10px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;
+  }
+  .flash-controls label { font-size: 13px; color: var(--ink-light); }
+  .flash-controls select {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 13px;
+    border: 1px solid var(--parchment-dark);
+    background: #fff9f0;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .btn {
+    background: var(--gold);
+    color: #fff8ee;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-family: 'Noto Sans KR', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all .15s;
+    box-shadow: 0 2px 8px rgba(200,146,42,0.35);
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  .btn:hover { background: #b07d20; transform: translateY(-1px); }
+  .btn.secondary {
+    background: transparent;
+    border: 1px solid var(--parchment-dark);
+    color: var(--ink-light);
+    box-shadow: none;
+  }
+  .btn.secondary:hover { background: var(--parchment-dark); }
+
+  .flashcard-wrap { perspective: 1000px; -webkit-perspective: 1000px; margin: 0 auto 20px; max-width: 380px; }
+  .flashcard {
+    width: 100%; height: 220px;
+    position: relative;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transition: transform .5s cubic-bezier(.4,0,.2,1);
+    -webkit-transition: -webkit-transform .5s cubic-bezier(.4,0,.2,1);
+    cursor: pointer;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); }
+  .fc-front, .fc-back {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    -webkit-align-items: center;
+    align-items: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    border: 2px solid var(--parchment-dark);
+    padding: 20px;
+  }
+  .fc-front { background: linear-gradient(135deg, #fff9f0 0%, #f5ead6 100%); }
+  .fc-back {
+    background: linear-gradient(135deg, #2c1a0e 0%, #3d2010 100%);
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    border-color: var(--gold);
+  }
+  .fc-front .big-letter { font-size: 96px; color: var(--crimson); font-family: 'Noto Serif KR', serif; line-height: 1; }
+  .fc-front .hint-text { font-size: 12px; color: var(--stone); margin-top: 8px; }
+  .fc-back .answer-name { font-family: 'Cinzel', serif; font-size: 28px; color: var(--gold); }
+  .fc-back .answer-sound { font-size: 18px; color: var(--parchment); margin: 8px 0; }
+  .fc-back .answer-tip { font-size: 13px; color: var(--stone); text-align: center; line-height: 1.6; }
+
+  .flash-nav {
+    display: flex; gap: 12px; justify-content: center; align-items: center;
+  }
+  .flash-progress {
+    font-size: 13px; color: var(--stone); flex: 1; text-align: center;
+  }
+
+  .flash-score {
+    display: flex; gap: 8px; justify-content: center; margin-top: 16px;
+  }
+  .score-btn {
+    flex: 1; max-width: 140px; padding: 10px; border: none; border-radius: 8px;
+    font-family: 'Noto Sans KR', sans-serif; font-size: 13px; cursor: pointer;
+    font-weight: 600; transition: all .15s;
+  }
+  .score-btn.correct { background: var(--olive); color: #fff; }
+  .score-btn.wrong { background: var(--crimson); color: #fff; }
+  .score-btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+  .score-display {
+    text-align: center; font-size: 12px; color: var(--stone); margin-top: 10px;
+  }
+  .score-display span { color: var(--gold); font-weight: 600; }
+
+  /* ─────────────────────────────────────────
+     TAB 3 : 쓰기 연습
+  ───────────────────────────────────────── */
+  #tab-write .card { padding: 24px 20px; }
+
+  .write-selector {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .letter-btn {
+    width: 44px; height: 44px;
+    border: 1.5px solid var(--parchment-dark);
+    background: #fff9f0;
+    border-radius: 7px;
+    font-size: 22px;
+    color: var(--crimson);
+    font-family: 'Noto Serif KR', serif;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .letter-btn:hover { border-color: var(--gold); background: #fef6e4; transform: scale(1.08); }
+  .letter-btn.sel { border-color: var(--gold); background: #fef6e4; box-shadow: 0 0 0 2px rgba(200,146,42,0.3); }
+
+  .write-area {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  @media (max-width: 600px) { .write-area { grid-template-columns: 1fr; } }
+
+  .write-example {
+    background: #fff9f0;
+    border: 1px solid var(--parchment-dark);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .write-example h4 { font-size: 12px; color: var(--stone); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+  .write-example .ex-letter { font-size: 100px; color: var(--crimson); font-family: 'Noto Serif KR', serif; line-height: 1.1; }
+  .write-example .ex-capital { font-size: 48px; color: var(--stone); font-family: 'Noto Serif KR', serif; }
+  .write-example .ex-name { font-family: 'Cinzel', serif; font-size: 16px; color: var(--ink); margin-top: 6px; }
+  .write-example .ex-sound {
+    font-size: 13px; color: var(--olive);
+    background: rgba(74,94,42,0.1); border-radius: 4px;
+    padding: 2px 8px; display: inline-block; margin-top: 4px;
+  }
+
+  .write-canvas-wrap h4 { font-size: 12px; color: var(--stone); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  canvas#drawCanvas {
+    border: 2px dashed var(--parchment-dark);
+    border-radius: 10px;
+    background: #fffdf8;
+    cursor: crosshair;
+    display: block;
+    width: 100%;
+    touch-action: none;
+    -ms-touch-action: none;
+  }
+  .canvas-tools {
+    display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .canvas-tools .btn { font-size: 12px; padding: 6px 14px; }
+
+  .stroke-guide {
+    margin-top: 14px;
+    background: rgba(139,26,26,0.06);
+    border-left: 3px solid var(--crimson);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.7;
+  }
+
+  /* ─────────────────────────────────────────
+     TAB 4 : 이중모음·숨표
+  ───────────────────────────────────────── */
+  #tab-extra .card { padding: 24px 20px; margin-bottom: 16px; }
+
+  .diphthong-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px;
+  }
+  .diph-cell {
+    background: #fff9f0;
+    border: 1px solid var(--parchment-dark);
+    border-radius: 8px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .18s;
+  }
+  .diph-cell:hover { border-color: var(--gold); background: #fef6e4; }
+  .diph-cell .dc-letters { font-size: 28px; color: var(--crimson); font-family: 'Noto Serif KR', serif; }
+  .diph-cell .dc-sound { font-size: 12px; color: var(--olive); margin-top: 4px; }
+  .diph-cell .dc-example { font-size: 11px; color: var(--stone); margin-top: 2px; }
+
+  .breathing-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .breath-box {
+    background: #fff9f0;
+    border: 1px solid var(--parchment-dark);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .breath-box h4 { font-family: 'Cinzel', serif; font-size: 13px; color: var(--ink); margin-bottom: 8px; }
+  .breath-box .mark { font-size: 40px; font-family: 'Noto Serif KR', serif; color: var(--crimson); }
+  .breath-box p { font-size: 12px; color: var(--ink-light); line-height: 1.7; margin-top: 6px; }
+  .breath-box .examples { font-size: 20px; color: var(--crimson); margin-top: 8px; font-family: 'Noto Serif KR', serif; }
+
+  /* ─── responsive ─── */
+  @media (max-width: 520px) {
+    .alphabet-grid { grid-template-columns: repeat(3, 1fr); }
+    .diphthong-grid { grid-template-columns: repeat(2, 1fr); }
+    .breathing-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <div class="subtitle-badge">한국침례신학대학교 · 헬라어 Ⅰ</div>
+    <h1>Κοινὴ Ἑλληνική<br>알파벳 학습 자료</h1>
+    <p>한철흠 교수 · 박창환 역편 교재 기준</p>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('table',this)">📋 알파벳 표</button>
+    <button class="tab-btn" onclick="switchTab('flash',this)">🃏 플래시카드</button>
+    <button class="tab-btn" onclick="switchTab('write',this)">✍️ 쓰기 연습</button>
+    <button class="tab-btn" onclick="switchTab('extra',this)">📖 이중모음·숨표</button>
+  </div>
+
+  <!-- ══ TAB 1 : 알파벳 표 ══ -->
+  <div id="tab-table" class="tab-panel active">
+    <div class="card">
+      <div class="section-title">24개 알파벳 — 클릭하면 상세 설명</div>
+      <div class="alphabet-grid" id="alphaGrid"></div>
+      <div class="detail-panel" id="detailPanel">
+        <div class="detail-big" id="dLetter"></div>
+        <div class="detail-info">
+          <h3 id="dName"></h3>
+          <div class="detail-sound" id="dSound"></div>
+          <div class="detail-memo" id="dMemo"></div>
+          <div class="detail-example" id="dExample"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 2 : 플래시카드 ══ -->
+  <div id="tab-flash" class="tab-panel">
+    <div class="card">
+      <div class="flash-controls">
+        <label>문제 방향:</label>
+        <select id="flashMode">
+          <option value="letterToName">글자 → 이름·음가</option>
+          <option value="nameToLetter">이름 → 글자</option>
+        </select>
+        <button class="btn" onclick="shuffleCards()">🔀 섞기</button>
+        <button class="btn secondary" onclick="resetScore()">점수 초기화</button>
+      </div>
+      <div class="flashcard-wrap">
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+          <div class="fc-front">
+            <div class="big-letter" id="fcFront">α</div>
+            <div class="hint-text">클릭하여 뒤집기</div>
+          </div>
+          <div class="fc-back">
+            <div class="answer-name" id="fcName">알파</div>
+            <div class="answer-sound" id="fcSound">음가: a</div>
+            <div class="answer-tip" id="fcTip"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flash-nav">
+        <button class="btn secondary" onclick="prevCard()">◀ 이전</button>
+        <div class="flash-progress" id="flashProgress">1 / 24</div>
+        <button class="btn" onclick="nextCard()">다음 ▶</button>
+      </div>
+      <div class="flash-score" id="flashScore" style="display:none">
+        <button class="score-btn correct" onclick="markCard(true)">✓ 알았음</button>
+        <button class="score-btn wrong" onclick="markCard(false)">✗ 몰랐음</button>
+      </div>
+      <div class="score-display">
+        정답 <span id="scoreCorrect">0</span> / 시도 <span id="scoreTotal">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 3 : 쓰기 연습 ══ -->
+  <div id="tab-write" class="tab-panel">
+    <div class="card">
+      <div class="section-title">연습할 알파벳 선택</div>
+      <div class="write-selector" id="writeBtns"></div>
+      <div class="write-area">
+        <div class="write-example">
+          <h4>예시</h4>
+          <div class="ex-letter" id="wLetter">α</div>
+          <div class="ex-capital" id="wCapital">Α</div>
+          <div class="ex-name" id="wName">알파 (Alpha)</div>
+          <div class="ex-sound" id="wSound">음가: a</div>
+        </div>
+        <div class="write-canvas-wrap">
+          <h4>직접 써보기</h4>
+          <canvas id="drawCanvas" width="400" height="220"></canvas>
+          <div class="canvas-tools">
+            <button class="btn secondary" onclick="clearCanvas()">🗑 지우기</button>
+            <label style="font-size:12px;color:var(--ink-light);display:flex;align-items:center;gap:6px;">
+              굵기:
+              <input type="range" id="penSize" min="2" max="16" value="5" style="width:70px;">
+            </label>
+          </div>
+          <div class="stroke-guide" id="strokeGuide"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TAB 4 : 이중모음·숨표 ══ -->
+  <div id="tab-extra" class="tab-panel">
+    <div class="card">
+      <div class="section-title">이중모음 (Diphthongs)</div>
+      <div class="diphthong-grid" id="diphGrid"></div>
+    </div>
+    <div class="card">
+      <div class="section-title">숨표 (Breathing Marks)</div>
+      <div class="breathing-row">
+        <div class="breath-box">
+          <h4>거친 숨표 (Rough Breathing) ῾</h4>
+          <div class="mark">ἁ</div>
+          <p>모음·이중모음 앞에 붙음.<br>
+          영어 <strong>h</strong> 소리가 앞에 붙는다고 생각.<br>
+          ρ 맨 앞에도 항상 거친 숨표.</p>
+          <div class="examples">ἁ &nbsp; ἑ &nbsp; ἱ &nbsp; ὁ &nbsp; ὑ &nbsp; ῥ</div>
+        </div>
+        <div class="breath-box">
+          <h4>연한 숨표 (Smooth Breathing) ᾿</h4>
+          <div class="mark">ἀ</div>
+          <p>모음·이중모음 앞에 붙음.<br>
+          아무 추가 발음 없이 그냥 읽는다.<br>
+          모음으로 시작하는 모든 단어에 있음.</p>
+          <div class="examples">ἀ &nbsp; ἐ &nbsp; ἰ &nbsp; ὀ &nbsp; ὐ</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:14px;background:#fff9f0;border-radius:8px;border:1px solid var(--parchment-dark);">
+        <div style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold);margin-bottom:8px;letter-spacing:2px;">실습 예시</div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;font-size:15px;line-height:2.2;color:var(--crimson);font-family:'Noto Serif KR',serif;">
+          <span title="하나 (거친)">εἷς &nbsp;<span style="font-size:12px;color:var(--stone)">하나 (거친)</span></span>
+          <span title="들어가다 (연한)">εἰς &nbsp;<span style="font-size:12px;color:var(--stone)">~안으로 (연한)</span></span>
+          <span title="사람">ἄνθρωπος &nbsp;<span style="font-size:12px;color:var(--stone)">사람 (연한)</span></span>
+          <span title="거룩한">ἅγιος &nbsp;<span style="font-size:12px;color:var(--stone)">거룩한 (거친)</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script>
+const ALPHA = [
+  { lower:'α', upper:'Α', name:'알파',  latin:'Alpha',  sound:'a',      long:false, tip:'영어 a와 동일. 그냥 쓴다.',                               stroke:'위에서 왼쪽 대각선 → 오른쪽 대각선 → 가운데 가로선', example:'ἀγάπη (사랑), ἄνθρωπος (사람)' },
+  { lower:'β', upper:'Β', name:'베타',  latin:'Beta',   sound:'b',      long:false, tip:'밑에서 위로 세로선 → 위쪽 반원 → 아래쪽 반원.',           stroke:'아래서 위로 선 긋고 위·아래 볼록 그리기', example:'βλέπω (보다), βαπτίζω (침례)' },
+  { lower:'γ', upper:'Γ', name:'감마',  latin:'Gamma',  sound:'g',      long:false, tip:'새총처럼 생긴 모양. γ+γ는 "ng" 발음.',                     stroke:'왼쪽 곡선 내려오다가 오른쪽으로 꼬리', example:'γινώσκω (알다), γράφω (쓰다)' },
+  { lower:'δ', upper:'Δ', name:'델타',  latin:'Delta',  sound:'d',      long:false, tip:'영어 d를 약간 삐딱하게.',                                   stroke:'작은 원 그리고 오른쪽 위로 꼬리', example:'δῶρον (선물), διδάσκω (가르치다)' },
+  { lower:'ε', upper:'Ε', name:'엡실론',latin:'Epsilon',sound:'e(단)',  long:false, tip:'창문처럼 생김. 단모음 에.',                                  stroke:'오른쪽에서 왼쪽으로 위·중간·아래 세 선', example:'ἐγώ (나), ἐκκλησία (교회)' },
+  { lower:'ζ', upper:'Ζ', name:'제타',  latin:'Zeta',   sound:'z(dz)', long:false, tip:'영어 Z와 유사. 마찰음.',                                     stroke:'위 가로선 → 대각선 → 아래 가로선', example:'ζωή (생명), βαπτίζω (침례)' },
+  { lower:'η', upper:'Η', name:'에타',  latin:'Eta',    sound:'ē(장)',  long:true,  tip:'대문자 H처럼 생김. 장모음 에. 우리말 "애" 연상.',           stroke:'왼 세로선 → 가운데 가로선 → 오른 세로선+꼬리', example:'ἡμεῖς (우리), ἡμέρα (날)' },
+  { lower:'θ', upper:'Θ', name:'세타',  latin:'Theta',  sound:'th',     long:false, tip:'번데기 모양. 가운데 선. 영어 th 발음.',                      stroke:'원 그리고 가운데 가로선', example:'θεός (하나님), θάνατος (죽음)' },
+  { lower:'ι', upper:'Ι', name:'이오타',latin:'Iota',   sound:'i',      long:false, tip:'짧은 세로선. 점 없음. 영어 i와 동일.',                      stroke:'위에서 아래로 세로선 (점 없음)', example:'ἱερόν (성전), Ἰησοῦς (예수)' },
+  { lower:'κ', upper:'Κ', name:'카파',  latin:'Kappa',  sound:'k',      long:false, tip:'영어 k와 동일.',                                             stroke:'세로선 → 위쪽 대각선 → 아래쪽 대각선', example:'καί (그리고), κύριος (주님)' },
+  { lower:'λ', upper:'Λ', name:'람다',  latin:'Lambda', sound:'l',      long:false, tip:'기린/공룡처럼 생긴 모양. 영어 L.',                           stroke:'왼쪽 대각선 내려오기 → 오른쪽 대각선 올라가기', example:'λύω (풀다), λόγος (말씀)' },
+  { lower:'μ', upper:'Μ', name:'뮤',    latin:'Mu',     sound:'m',      long:false, tip:'밑에서부터 씀. 영어 M.',                                      stroke:'아래서 위로 → 대각선 아래로 → 대각선 위로 → 아래로', example:'μαθητής (제자), μένω (머물다)' },
+  { lower:'ν', upper:'Ν', name:'뉴',    latin:'Nu',     sound:'n',      long:false, tip:'영어 n과 유사하지만 약간 기울어짐.',                         stroke:'위에서 아래 → 대각선 → 위에서 아래', example:'νόμος (율법), νεκρός (죽은)' },
+  { lower:'ξ', upper:'Ξ', name:'크시',  latin:'Xi',     sound:'ks',     long:false, tip:'가로 세 줄. ks 복합음.',                                     stroke:'위·중간·아래 세 가로선', example:'없음 (주로 어미에 나타남)' },
+  { lower:'ο', upper:'Ο', name:'오미크론',latin:'Omicron',sound:'o(단)',long:false, tip:'단모음 오. 동그라미.',                                       stroke:'완전한 원', example:'ὁ (정관사남), λόγος (말씀)' },
+  { lower:'π', upper:'Π', name:'파이',  latin:'Pi',     sound:'p',      long:false, tip:'π처럼 생긴 문자. 영어 p.',                                  stroke:'위 가로선 → 왼 세로선 + 오른 세로선', example:'πιστεύω (믿다), πνεῦμα (영)' },
+  { lower:'ρ', upper:'Ρ', name:'로',    latin:'Rho',    sound:'r',      long:false, tip:'영어 p처럼 생겼지만 r 발음. 단어 처음엔 거친숨표.',          stroke:'위에서 아래 세로선 → 오른쪽 반원', example:'ῥῆμα (말씀/단어)' },
+  { lower:'σ/ς',upper:'Σ',name:'시그마',latin:'Sigma',  sound:'s',      long:false, tip:'단어 중간은 σ, 단어 끝은 ς.',                               stroke:'(σ) 위 반원+아래 반원 / (ς) 더 둥글게', example:'σῴζω (구원), σύ (너)' },
+  { lower:'τ', upper:'Τ', name:'타우',  latin:'Tau',    sound:'t',      long:false, tip:'십자가 모양! 영어 t.',                                       stroke:'위 가로선 → 아래로 세로선', example:'τέκνον (아이), τόπος (장소)' },
+  { lower:'υ', upper:'Υ', name:'윕실론',latin:'Upsilon',sound:'u/y',    long:false, tip:'u 모양. ου는 "우" 발음.',                                    stroke:'왼 대각선 → 오른 대각선 → 아래 세로선', example:'υἱός (아들), ὑμεῖς (너희)' },
+  { lower:'φ', upper:'Φ', name:'파이',  latin:'Phi',    sound:'ph(f)',  long:false, tip:'원 가운데 세로선. f 계열 발음.',                              stroke:'세로선 → 가운데 원', example:'φῶς (빛), φιλέω (사랑하다)' },
+  { lower:'χ', upper:'Χ', name:'카이',  latin:'Chi',    sound:'ch(kh)', long:false, tip:'영어 X처럼. 거센 k 발음.',                                  stroke:'대각선 두 개 교차', example:'χριστός (그리스도), χαρά (기쁨)' },
+  { lower:'ψ', upper:'Ψ', name:'프시',  latin:'Psi',    sound:'ps',     long:false, tip:'삼지창 모양. ps 복합음.',                                   stroke:'가운데 세로선 + 양쪽 곡선', example:'ψυχή (영혼/목숨)' },
+  { lower:'ω', upper:'Ω', name:'오메가',latin:'Omega',  sound:'ō(장)',  long:true,  tip:'장모음 오. α와 ω = 처음과 끝 (계 1:8).',                    stroke:'큰 원의 아래쪽 부분 + 양쪽 작은 수평선', example:'ὁδός (길), ὅτι (왜냐하면)' },
+];
+
+const DIPHTHONGS = [
+  { letters:'αι', sound:'ai (아이)', example:'καί (그리고)' },
+  { letters:'ει', sound:'ei (에이)', example:'εἰρήνη (평화)' },
+  { letters:'οι', sound:'oi (오이)', example:'οἶκος (집)' },
+  { letters:'αυ', sound:'au (아우)', example:'αὐτός (그/자신)' },
+  { letters:'ευ', sound:'eu (에우)', example:'εὐαγγέλιον (복음)' },
+  { letters:'ου', sound:'ou (우)',   example:'οὐρανός (하늘)' },
+];
+
+/* ─── 알파벳 표 빌드 ─── */
+const grid = document.getElementById('alphaGrid');
+ALPHA.forEach((a, i) => {
+  const card = document.createElement('div');
+  card.className = 'alpha-card';
+  card.innerHTML = `
+    <div class="alpha-num">${i+1}</div>
+    <div class="alpha-letter">${a.lower}</div>
+    <div class="alpha-capital">${a.upper}</div>
+    <div class="alpha-name">${a.name}</div>
+    <div class="alpha-sound">${a.sound}</div>
+    <div class="alpha-tip">${a.tip.substring(0,30)}${a.tip.length>30?'…':''}</div>`;
+  card.onclick = () => showDetail(i, card);
+  grid.appendChild(card);
+});
+
+let activeCard = null;
+function showDetail(i, el) {
+  const a = ALPHA[i];
+  if (activeCard) activeCard.classList.remove('highlighted');
+  if (activeCard === el) { activeCard = null; document.getElementById('detailPanel').classList.remove('show'); return; }
+  activeCard = el; el.classList.add('highlighted');
+  document.getElementById('dLetter').textContent = a.lower + ' ' + a.upper;
+  document.getElementById('dName').textContent = `${a.name} (${a.latin})`;
+  document.getElementById('dSound').textContent = `음가: ${a.sound}${a.long ? ' — 장모음' : ''}`;
+  document.getElementById('dMemo').textContent = a.tip;
+  document.getElementById('dExample').textContent = '예: ' + a.example;
+  const p = document.getElementById('detailPanel');
+  p.classList.add('show');
+  p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ─── 플래시카드 ─── */
+let deck = [...ALPHA];
+let fcIdx = 0, isFlipped = false, scoreC = 0, scoreT = 0;
+
+function buildCard() {
+  const a = deck[fcIdx];
+  const mode = document.getElementById('flashMode').value;
+  const fc = document.getElementById('flashcard');
+  fc.classList.remove('flipped'); isFlipped = false;
+  document.getElementById('flashScore').style.display = 'none';
+  if (mode === 'letterToName') {
+    document.getElementById('fcFront').textContent = a.lower;
+    document.getElementById('fcName').textContent = `${a.name} (${a.latin})`;
+    document.getElementById('fcSound').textContent = `음가: ${a.sound}`;
+    document.getElementById('fcTip').textContent = a.tip;
+  } else {
+    document.getElementById('fcFront').textContent = a.name;
+    document.getElementById('fcName').textContent = a.lower + '  ' + a.upper;
+    document.getElementById('fcSound').textContent = `음가: ${a.sound}`;
+    document.getElementById('fcTip').textContent = a.tip;
+  }
+  document.getElementById('flashProgress').textContent = `${fcIdx+1} / ${deck.length}`;
+}
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('flashcard').classList.toggle('flipped', isFlipped);
+  if (isFlipped) document.getElementById('flashScore').style.display = 'flex';
+}
+function nextCard() { fcIdx = (fcIdx+1) % deck.length; buildCard(); }
+function prevCard() { fcIdx = (fcIdx-1+deck.length) % deck.length; buildCard(); }
+function shuffleCards() {
+  deck = [...ALPHA].sort(() => Math.random()-.5);
+  fcIdx = 0; buildCard();
+}
+function markCard(correct) {
+  scoreT++;
+  if (correct) scoreC++;
+  document.getElementById('scoreCorrect').textContent = scoreC;
+  document.getElementById('scoreTotal').textContent = scoreT;
+  nextCard();
+}
+function resetScore() { scoreC = 0; scoreT = 0; document.getElementById('scoreCorrect').textContent = 0; document.getElementById('scoreTotal').textContent = 0; }
+buildCard();
+
+/* ─── 쓰기 연습 ─── */
+const wBtns = document.getElementById('writeBtns');
+ALPHA.forEach((a, i) => {
+  const b = document.createElement('button');
+  b.className = 'letter-btn' + (i===0?' sel':'');
+  b.textContent = a.lower;
+  b.onclick = () => selectWrite(i, b);
+  wBtns.appendChild(b);
+});
+function selectWrite(i, btn) {
+  document.querySelectorAll('.letter-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const a = ALPHA[i];
+  document.getElementById('wLetter').textContent = a.lower;
+  document.getElementById('wCapital').textContent = a.upper;
+  document.getElementById('wName').textContent = `${a.name} (${a.latin})`;
+  document.getElementById('wSound').textContent = `음가: ${a.sound}`;
+  document.getElementById('strokeGuide').innerHTML = `<strong>획순 가이드:</strong> ${a.stroke}<br><em style="color:var(--crimson)">${a.example}</em>`;
+  // clear and re-scale
+  initCanvasSize();
+}
+document.getElementById('strokeGuide').innerHTML = `<strong>획순 가이드:</strong> ${ALPHA[0].stroke}<br><em style="color:var(--crimson)">${ALPHA[0].example}</em>`;
+
+/* canvas drawing */
+const canvas = document.getElementById('drawCanvas');
+const ctx = canvas.getContext('2d');
+let drawing = false, lastX = 0, lastY = 0;
+let canvasReady = false;
+
+// Set canvas internal resolution to match its displayed size
+// Must be called AFTER the canvas is actually visible (non-zero size)
+function resizeCanvas(clear) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const w = rect.width  || canvas.offsetWidth  || 300;
+  const h = rect.height || canvas.offsetHeight || 220;
+  // Only resize if dimensions changed (avoids clearing on every call)
+  if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr) || clear) {
+    canvas.width  = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  canvasReady = true;
+}
+
+// Set explicit pixel height via attribute so canvas has non-zero size
+// even before CSS paint (important on iOS)
+function initCanvasSize() {
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.parentElement.offsetWidth || 300;
+  const DISPLAY_H = 220;
+  canvas.style.height = DISPLAY_H + 'px';
+  canvas.width  = Math.round(w * dpr);
+  canvas.height = Math.round(DISPLAY_H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  canvasReady = true;
+}
+
+function getPos(e) {
+  const r = canvas.getBoundingClientRect();
+  if (e.touches && e.touches.length > 0) {
+    return [e.touches[0].clientX - r.left, e.touches[0].clientY - r.top];
+  }
+  return [e.clientX - r.left, e.clientY - r.top];
+}
+
+function drawLine(x, y) {
+  ctx.beginPath();
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(x, y);
+  ctx.strokeStyle = '#8b1a1a';
+  ctx.lineWidth = Number(document.getElementById('penSize').value);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+  [lastX, lastY] = [x, y];
+}
+
+canvas.addEventListener('mousedown', e => {
+  if (!canvasReady) resizeCanvas();
+  drawing = true;
+  [lastX, lastY] = getPos(e);
+});
+canvas.addEventListener('mousemove', e => {
+  if (!drawing) return;
+  drawLine(...getPos(e));
+});
+canvas.addEventListener('mouseup',    () => { drawing = false; });
+canvas.addEventListener('mouseleave', () => { drawing = false; });
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if (!canvasReady) resizeCanvas();
+  drawing = true;
+  [lastX, lastY] = getPos(e);
+}, { passive: false });
+
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!drawing) return;
+  drawLine(...getPos(e));
+}, { passive: false });
+
+canvas.addEventListener('touchend',   () => { drawing = false; }, { passive: false });
+canvas.addEventListener('touchcancel',() => { drawing = false; }, { passive: false });
+
+function clearCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+}
+
+// Initialize canvas size immediately
+initCanvasSize();
+window.addEventListener('resize', () => { initCanvasSize(); });
+
+/* ─── 이중모음 ─── */
+const dg = document.getElementById('diphGrid');
+DIPHTHONGS.forEach(d => {
+  const c = document.createElement('div');
+  c.className = 'diph-cell';
+  c.innerHTML = `<div class="dc-letters">${d.letters}</div><div class="dc-sound">${d.sound}</div><div class="dc-example">${d.example}</div>`;
+  dg.appendChild(c);
+});
+
+/* ─── 탭 전환 ─── */
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  // Re-init canvas when write tab becomes visible
+  if (name === 'write') {
+    requestAnimationFrame(() => { initCanvasSize(); });
+  }
+}
+</script>
+</body>
+</html>
