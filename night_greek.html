@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOINĒ GREEK — 코이네 헬라어 학습</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0e17;--surface:#1a1926;--surface2:#242235;
+  --accent:#c9a84c;--accent2:#e8c87a;
+  --text:#e8e4d9;--text2:#9e9a8e;
+  --correct:#4caf7d;--wrong:#e05c5c;
+  --border:rgba(201,168,76,0.2);
+}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;min-height:100vh}
+.app{max-width:860px;margin:0 auto;padding:0 16px 80px}
+
+/* HEADER */
+.app-header{text-align:center;padding:40px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px}
+.app-title{font-family:'Cinzel',serif;font-size:clamp(28px,5vw,44px);color:var(--accent);letter-spacing:4px;text-shadow:0 0 40px rgba(201,168,76,0.3)}
+.app-sub{color:var(--text2);font-size:14px;margin-top:8px;letter-spacing:1px}
+.speech-note{font-size:11px;color:var(--text2);margin-top:6px;opacity:0.7}
+
+/* TABS */
+.tab-nav{display:flex;gap:4px;background:var(--surface);border-radius:14px;padding:6px;margin-bottom:32px;border:1px solid var(--border)}
+.tab-btn{flex:1;background:none;border:none;color:var(--text2);padding:10px 8px;border-radius:10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:13px;font-weight:500;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.tab-icon{font-family:'Cinzel',serif;font-size:17px}
+.tab-btn:hover{color:var(--accent2);background:var(--surface2)}
+.tab-btn.active{background:var(--accent);color:#0f0e17;font-weight:700}
+.tab-btn.active .tab-icon{color:#0f0e17}
+
+.tab-pane{display:none;animation:fadeIn .3s ease}
+.tab-pane.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+.section-title{font-family:'Cinzel',serif;font-size:22px;color:var(--accent);margin-bottom:6px}
+.section-desc{color:var(--text2);font-size:13px;margin-bottom:24px}
+
+/* SPEAK BTN */
+.speak-btn{background:rgba(201,168,76,0.15);border:1px solid var(--border);border-radius:8px;cursor:pointer;padding:6px 10px;font-size:16px;transition:background .2s;color:var(--accent)}
+.speak-btn:hover{background:rgba(201,168,76,0.3)}
+.speak-btn-sm{padding:3px 7px;font-size:13px}
+
+/* ALPHABET */
+.alphabet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-bottom:24px}
+.alpha-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 8px;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .2s}
+.alpha-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.alpha-card.selected{border-color:var(--accent);background:var(--surface2)}
+.alpha-letter{font-family:'Noto Serif',serif;font-size:28px;color:var(--accent)}
+.alpha-lower{font-family:'Noto Serif',serif;font-size:22px;color:var(--accent2)}
+.alpha-name{font-size:11px;color:var(--text2)}
+
+.alpha-detail{background:var(--surface2);border:1px solid var(--accent);border-radius:16px;padding:24px;display:none}
+.alpha-detail.show{display:block;animation:fadeIn .3s ease}
+.detail-header{display:flex;align-items:center;gap:20px;margin-bottom:16px}
+.detail-letter{font-family:'Noto Serif',serif;font-size:56px;color:var(--accent);line-height:1}
+.detail-title{font-size:20px;font-weight:700;color:var(--text)}
+.detail-sound{font-size:14px;color:var(--text2);margin-top:4px}
+.detail-example{background:var(--surface);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.ex-greek{font-family:'Noto Serif',serif;font-size:24px;color:var(--accent2)}
+.ex-meaning{color:var(--text2);font-size:15px}
+
+/* FLASHCARD */
+.cat-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.pill{background:var(--surface);border:1px solid var(--border);color:var(--text2);border-radius:20px;padding:6px 16px;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;transition:all .2s}
+.pill:hover{border-color:var(--accent);color:var(--accent)}
+.pill.active{background:var(--accent);color:#0f0e17;border-color:var(--accent);font-weight:700}
+
+.progress-wrap{background:var(--surface);border-radius:100px;height:8px;margin-bottom:28px;overflow:hidden;position:relative}
+.progress-bar{height:100%;background:var(--accent);border-radius:100px;transition:width .4s}
+.progress-text{position:absolute;right:0;top:-20px;font-size:12px;color:var(--text2)}
+
+.flashcard-scene{perspective:1000px;height:240px;cursor:pointer;margin-bottom:24px;position:relative}
+.card-face{position:absolute;inset:0;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform .5s;border:1px solid var(--border)}
+.card-front{background:var(--surface2);transform:rotateY(0deg)}
+.card-back{background:linear-gradient(135deg,var(--surface2),#1e1a30);border-color:var(--accent);transform:rotateY(180deg)}
+.flashcard-scene.flipped .card-front{transform:rotateY(-180deg)}
+.flashcard-scene.flipped .card-back{transform:rotateY(0deg)}
+
+.card-greek{font-family:'Noto Serif',serif;font-size:52px;color:var(--accent)}
+.card-hint{font-size:12px;color:var(--text2)}
+.card-freq{font-size:11px;color:var(--text2);position:absolute;bottom:14px;right:18px}
+.card-kor{font-size:36px;font-weight:700;color:var(--text)}
+.card-eng{font-size:18px;color:var(--text2)}
+.card-cat-badge{background:rgba(201,168,76,0.2);color:var(--accent);padding:4px 12px;border-radius:100px;font-size:12px}
+
+.card-controls{display:flex;gap:12px;justify-content:center;margin-bottom:12px}
+.ctrl-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 24px;border-radius:10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:14px;transition:all .2s}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent)}
+.ctrl-known{border-color:var(--correct);color:var(--correct)}
+.ctrl-known:hover{background:rgba(76,175,125,0.15)}
+.known-count{text-align:center;font-size:13px;color:var(--text2)}
+
+/* QUIZ */
+.score-bar{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;font-size:15px}
+.score-pct{font-size:24px;font-weight:700;color:var(--accent);font-family:'Cinzel',serif}
+.quiz-question{text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:36px 24px 24px;margin-bottom:20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.quiz-greek{font-family:'Noto Serif',serif;font-size:56px;color:var(--accent)}
+.quiz-prompt{font-size:15px;color:var(--text2)}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.quiz-opt{background:var(--surface);border:2px solid var(--border);color:var(--text);padding:18px 16px;border-radius:14px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:16px;font-weight:500;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;width:100%}
+.quiz-opt:hover:not(:disabled){border-color:var(--accent)}
+.opt-eng{font-size:12px;color:var(--text2);font-weight:400}
+.opt-correct{border-color:var(--correct)!important;background:rgba(76,175,125,0.15)!important;color:var(--correct)!important}
+.opt-wrong{border-color:var(--wrong)!important;background:rgba(224,92,92,0.15)!important;color:var(--wrong)!important}
+.quiz-result{border-radius:14px;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;font-size:16px;font-weight:600;display:none}
+.quiz-result.show{display:flex}
+.result-correct{background:rgba(76,175,125,0.15);color:var(--correct);border:1px solid var(--correct)}
+.result-wrong{background:rgba(224,92,92,0.15);color:var(--wrong);border:1px solid var(--wrong)}
+.next-quiz-btn{background:rgba(255,255,255,0.1);border:none;color:inherit;padding:8px 18px;border-radius:8px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;font-size:14px}
+.next-quiz-btn:hover{background:rgba(255,255,255,0.2)}
+
+/* GRAMMAR */
+.grammar-list{display:flex;flex-direction:column;gap:10px}
+.grammar-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.grammar-item.open{border-color:var(--accent)}
+.grammar-header{width:100%;background:none;border:none;color:var(--text);padding:18px 20px;display:flex;align-items:center;gap:16px;cursor:pointer;text-align:left}
+.grammar-header:hover{background:var(--surface2)}
+.grammar-num{font-family:'Cinzel',serif;font-size:28px;color:var(--accent);opacity:.5;min-width:40px}
+.grammar-title{font-size:17px;font-weight:700;margin-bottom:3px}
+.grammar-sub{font-size:12px;color:var(--text2)}
+.grammar-arrow{margin-left:auto;color:var(--accent);font-size:12px}
+.grammar-body{padding:0 20px 20px 76px;display:none}
+.grammar-item.open .grammar-body{display:block}
+.grammar-desc{color:var(--text2);font-size:14px;margin-bottom:16px}
+.grammar-table-wrap{overflow-x:auto;margin-bottom:16px}
+.grammar-table{width:100%;border-collapse:collapse;font-size:14px}
+.grammar-table th{background:rgba(201,168,76,0.15);color:var(--accent);padding:10px 12px;text-align:center;font-weight:600;border-bottom:1px solid var(--border);white-space:nowrap}
+.grammar-table td{padding:10px 12px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.05)}
+.td-label{color:var(--text2);font-size:12px;text-align:left;white-space:nowrap}
+.td-greek{font-family:'Noto Serif',serif;font-size:17px;color:var(--accent2)}
+.grammar-items-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.grammar-item-row{background:var(--surface2);border-radius:10px;padding:14px 16px}
+.item-name{font-size:14px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.item-desc{font-size:12px;color:var(--text2);margin-bottom:6px}
+.item-example{font-family:'Noto Serif',serif;font-size:15px;color:var(--text)}
+.grammar-tip{background:rgba(201,168,76,0.1);border-left:3px solid var(--accent);padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;color:var(--accent2)}
+
+@media(max-width:500px){
+  .quiz-options{grid-template-columns:1fr}
+  .card-controls{flex-direction:column}
+  .grammar-body{padding-left:20px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="app-header">
+    <div class="app-title">KOINĒ GREEK</div>
+    <div class="app-sub">코이네 헬라어 학습 · 신약성서 헬라어</div>
+    <div class="speech-note">🔊 발음은 현대 그리스어 TTS 참고용입니다</div>
+  </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('alphabet')">
+      <span class="tab-icon">Αα</span>알파벳
+    </button>
+    <button class="tab-btn" onclick="switchTab('flashcard')">
+      <span class="tab-icon">📖</span>플래시카드
+    </button>
+    <button class="tab-btn" onclick="switchTab('quiz')">
+      <span class="tab-icon">✏️</span>퀴즈
+    </button>
+    <button class="tab-btn" onclick="switchTab('grammar')">
+      <span class="tab-icon">📋</span>문법
+    </button>
+  </nav>
+
+  <!-- ALPHABET TAB -->
+  <div id="tab-alphabet" class="tab-pane active">
+    <h2 class="section-title">헬라어 알파벳</h2>
+    <p class="section-desc">24개의 글자를 클릭해 자세히 알아보세요</p>
+    <div class="alphabet-grid" id="alpha-grid"></div>
+    <div class="alpha-detail" id="alpha-detail"></div>
+  </div>
+
+  <!-- FLASHCARD TAB -->
+  <div id="tab-flashcard" class="tab-pane">
+    <h2 class="section-title">단어 플래시카드</h2>
+    <div class="cat-pills" id="cat-pills"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="prog-bar"></div>
+      <span class="progress-text" id="prog-text"></span>
+    </div>
+    <div class="flashcard-scene" id="flashcard" onclick="flipCard()">
+      <div class="card-face card-front">
+        <div class="card-greek" id="card-greek"></div>
+        <button class="speak-btn speak-btn-sm" onclick="event.stopPropagation();speakGreek(currentCard().greek)">🔊</button>
+        <div class="card-hint">클릭하여 뒤집기</div>
+        <div class="card-freq" id="card-freq"></div>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-kor" id="card-kor"></div>
+        <div class="card-eng" id="card-eng"></div>
+        <div class="card-cat-badge" id="card-cat"></div>
+      </div>
+    </div>
+    <div class="card-controls">
+      <button class="ctrl-btn" onclick="prevCard()">← 이전</button>
+      <button class="ctrl-btn ctrl-known" onclick="markKnown()">✓ 알았어요</button>
+      <button class="ctrl-btn" onclick="nextCard()">다음 →</button>
+    </div>
+    <div class="known-count" id="known-count"></div>
+  </div>
+
+  <!-- QUIZ TAB -->
+  <div id="tab-quiz" class="tab-pane">
+    <h2 class="section-title">퀴즈 테스트</h2>
+    <div class="score-bar">
+      <span>점수: <strong id="score-num">0</strong> / <span id="score-total">0</span></span>
+      <span class="score-pct" id="score-pct">0%</span>
+    </div>
+    <div class="quiz-question">
+      <div class="quiz-greek" id="quiz-greek"></div>
+      <button class="speak-btn" onclick="speakGreek(quizState.correct.greek)">🔊</button>
+      <div class="quiz-prompt">이 단어의 의미는?</div>
+    </div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <div class="quiz-result" id="quiz-result">
+      <span id="quiz-result-text"></span>
+      <button class="next-quiz-btn" onclick="generateQuiz()">다음 문제 →</button>
+    </div>
+  </div>
+
+  <!-- GRAMMAR TAB -->
+  <div id="tab-grammar" class="tab-pane">
+    <h2 class="section-title">문법 설명</h2>
+    <div class="grammar-list" id="grammar-list"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════ DATA ═══════════════════
+const ALPHABET = [
+  {letter:"Α α",name:"알파",romanized:"Alpha",speakText:"άλφα",example:"ἀγάπη",exampleMeaning:"사랑",pron:"아"},
+  {letter:"Β β",name:"베타",romanized:"Beta",speakText:"βήτα",example:"βίβλος",exampleMeaning:"책",pron:"브"},
+  {letter:"Γ γ",name:"감마",romanized:"Gamma",speakText:"γάμμα",example:"γῆ",exampleMeaning:"땅",pron:"그"},
+  {letter:"Δ δ",name:"델타",romanized:"Delta",speakText:"δέλτα",example:"δόξα",exampleMeaning:"영광",pron:"드"},
+  {letter:"Ε ε",name:"엡실론",romanized:"Epsilon",speakText:"έψιλον",example:"ἐκκλησία",exampleMeaning:"교회",pron:"에 (단)"},
+  {letter:"Ζ ζ",name:"제타",romanized:"Zeta",speakText:"ζήτα",example:"ζωή",exampleMeaning:"생명",pron:"즈"},
+  {letter:"Η η",name:"에타",romanized:"Eta",speakText:"ήτα",example:"ἡμέρα",exampleMeaning:"날",pron:"에 (장)"},
+  {letter:"Θ θ",name:"세타",romanized:"Theta",speakText:"θήτα",example:"θεός",exampleMeaning:"하나님",pron:"쓰"},
+  {letter:"Ι ι",name:"이오타",romanized:"Iota",speakText:"ιώτα",example:"Ἰησοῦς",exampleMeaning:"예수",pron:"이"},
+  {letter:"Κ κ",name:"카파",romanized:"Kappa",speakText:"κάππα",example:"κύριος",exampleMeaning:"주님",pron:"크"},
+  {letter:"Λ λ",name:"람다",romanized:"Lambda",speakText:"λάμδα",example:"λόγος",exampleMeaning:"말씀",pron:"르"},
+  {letter:"Μ μ",name:"뮤",romanized:"Mu",speakText:"μι",example:"μαθητής",exampleMeaning:"제자",pron:"므"},
+  {letter:"Ν ν",name:"뉴",romanized:"Nu",speakText:"νι",example:"νόμος",exampleMeaning:"율법",pron:"느"},
+  {letter:"Ξ ξ",name:"크시",romanized:"Xi",speakText:"ξι",example:"ξύλον",exampleMeaning:"나무",pron:"크스"},
+  {letter:"Ο ο",name:"오미크론",romanized:"Omicron",speakText:"όμικρον",example:"ὁδός",exampleMeaning:"길",pron:"오 (단)"},
+  {letter:"Π π",name:"파이",romanized:"Pi",speakText:"πι",example:"πίστις",exampleMeaning:"믿음",pron:"프"},
+  {letter:"Ρ ρ",name:"로",romanized:"Rho",speakText:"ρω",example:"ῥῆμα",exampleMeaning:"말씀",pron:"르"},
+  {letter:"Σ σ/ς",name:"시그마",romanized:"Sigma",speakText:"σίγμα",example:"σῴζω",exampleMeaning:"구원하다",pron:"스"},
+  {letter:"Τ τ",name:"타우",romanized:"Tau",speakText:"ταυ",example:"τέκνον",exampleMeaning:"자녀",pron:"트"},
+  {letter:"Υ υ",name:"웁실론",romanized:"Upsilon",speakText:"ύψιλον",example:"υἱός",exampleMeaning:"아들",pron:"위"},
+  {letter:"Φ φ",name:"파이",romanized:"Phi",speakText:"φι",example:"φωνή",exampleMeaning:"소리",pron:"프"},
+  {letter:"Χ χ",name:"키",romanized:"Chi",speakText:"χι",example:"Χριστός",exampleMeaning:"그리스도",pron:"크"},
+  {letter:"Ψ ψ",name:"프시",romanized:"Psi",speakText:"ψι",example:"ψυχή",exampleMeaning:"영혼",pron:"프스"},
+  {letter:"Ω ω",name:"오메가",romanized:"Omega",speakText:"ωμέγα",example:"ὥρα",exampleMeaning:"시간",pron:"오 (장)"},
+];
+
+const VOCABULARY = [
+  {greek:"θεός",korean:"하나님",english:"God",category:"신학",freq:1318},
+  {greek:"λόγος",korean:"말씀/이성",english:"Word/Logos",category:"신학",freq:330},
+  {greek:"ἀγάπη",korean:"사랑",english:"Love",category:"신학",freq:116},
+  {greek:"πίστις",korean:"믿음",english:"Faith",category:"신학",freq:243},
+  {greek:"χάρις",korean:"은혜",english:"Grace",category:"신학",freq:155},
+  {greek:"εἰρήνη",korean:"평화",english:"Peace",category:"신학",freq:92},
+  {greek:"ζωή",korean:"생명",english:"Life",category:"신학",freq:135},
+  {greek:"κύριος",korean:"주님",english:"Lord",category:"신학",freq:717},
+  {greek:"Ἰησοῦς",korean:"예수",english:"Jesus",category:"인명",freq:916},
+  {greek:"Χριστός",korean:"그리스도",english:"Christ",category:"신학",freq:529},
+  {greek:"πνεῦμα",korean:"영/바람",english:"Spirit/Wind",category:"신학",freq:379},
+  {greek:"ἄνθρωπος",korean:"사람",english:"Man/Human",category:"일반",freq:550},
+  {greek:"κόσμος",korean:"세상",english:"World",category:"일반",freq:186},
+  {greek:"ἐκκλησία",korean:"교회",english:"Church",category:"신학",freq:114},
+  {greek:"βασιλεία",korean:"나라/왕국",english:"Kingdom",category:"신학",freq:162},
+  {greek:"ἁμαρτία",korean:"죄",english:"Sin",category:"신학",freq:173},
+  {greek:"νόμος",korean:"율법",english:"Law",category:"신학",freq:194},
+  {greek:"δόξα",korean:"영광",english:"Glory",category:"신학",freq:166},
+  {greek:"ἀδελφός",korean:"형제",english:"Brother",category:"관계",freq:343},
+  {greek:"πατήρ",korean:"아버지",english:"Father",category:"관계",freq:413},
+  {greek:"υἱός",korean:"아들",english:"Son",category:"관계",freq:377},
+  {greek:"μαθητής",korean:"제자",english:"Disciple",category:"관계",freq:261},
+  {greek:"ἀλήθεια",korean:"진리",english:"Truth",category:"신학",freq:109},
+  {greek:"σῴζω",korean:"구원하다",english:"To Save",category:"동사",freq:106},
+  {greek:"λέγω",korean:"말하다",english:"To Say",category:"동사",freq:2354},
+  {greek:"εἶπεν",korean:"말했다",english:"He Said",category:"동사",freq:613},
+  {greek:"ἔρχομαι",korean:"오다",english:"To Come",category:"동사",freq:634},
+  {greek:"ποιέω",korean:"하다/만들다",english:"To Do/Make",category:"동사",freq:568},
+  {greek:"ὁράω",korean:"보다",english:"To See",category:"동사",freq:454},
+  {greek:"ἀκούω",korean:"듣다",english:"To Hear",category:"동사",freq:428},
+];
+
+const GRAMMAR = [
+  {
+    title:"관사 (The Article)",subtitle:"헬라어 정관사 변화표",
+    content:"헬라어에는 정관사(the)만 있고 부정관사(a/an)는 없습니다.",
+    table:{
+      headers:["격","남성 단수","여성 단수","중성 단수","남성 복수","여성 복수","중성 복수"],
+      rows:[
+        ["주격 (Nom)","ὁ","ἡ","τό","οἱ","αἱ","τά"],
+        ["속격 (Gen)","τοῦ","τῆς","τοῦ","τῶν","τῶν","τῶν"],
+        ["여격 (Dat)","τῷ","τῇ","τῷ","τοῖς","ταῖς","τοῖς"],
+        ["대격 (Acc)","τόν","τήν","τό","τούς","τάς","τά"],
+      ]
+    },
+    tip:"관사는 명사의 성·수·격에 일치시켜야 합니다."
+  },
+  {
+    title:"명사 격 (Noun Cases)",subtitle:"5가지 격의 기능",
+    content:"헬라어 명사는 문장에서의 역할에 따라 격이 변합니다.",
+    items:[
+      {name:"주격 (Nominative)",desc:"주어 역할",example:"ὁ θεός — 하나님이 (주어)"},
+      {name:"속격 (Genitive)",desc:"소유/~의",example:"τοῦ θεοῦ — 하나님의"},
+      {name:"여격 (Dative)",desc:"간접목적어/~에게",example:"τῷ θεῷ — 하나님께"},
+      {name:"대격 (Accusative)",desc:"직접목적어",example:"τὸν θεόν — 하나님을"},
+      {name:"호격 (Vocative)",desc:"부름/~이여",example:"ὦ θεέ — 하나님이시여"},
+    ],
+    tip:"격을 파악하는 것이 헬라어 독해의 핵심입니다."
+  },
+  {
+    title:"동사 기본형 (Verb Basics)",subtitle:"현재 능동태 직설법 어미",
+    content:"동사 어미로 인칭과 수를 나타냅니다. λύω(풀다)를 예로 봅니다.",
+    table:{
+      headers:["인칭","단수","의미","복수","의미"],
+      rows:[
+        ["1인칭","λύ-ω","나는 푼다","λύ-ομεν","우리는 푼다"],
+        ["2인칭","λύ-εις","너는 푼다","λύ-ετε","너희는 푼다"],
+        ["3인칭","λύ-ει","그/녀는 푼다","λύ-ουσι(ν)","그들은 푼다"],
+      ]
+    },
+    tip:"헬라어는 주어가 없어도 동사 어미만으로 인칭을 파악할 수 있습니다."
+  },
+  {
+    title:"강조 구조 (Emphasis)",subtitle:"어순과 강조",
+    content:"헬라어는 어순이 비교적 자유롭지만, 어순 변화로 강조를 표현합니다.",
+    items:[
+      {name:"문장 앞에 오는 요소",desc:"강조됨",example:"θεὸν οὐδεὶς ἑώρακεν — 하나님을 본 자가 없다 (θεόν 강조)"},
+      {name:"동사 생략",desc:"εἰμί(be동사)는 자주 생략",example:"ὁ θεὸς ἀγάπη — 하나님은 사랑이시다"},
+      {name:"아르티클 구조",desc:"A-B-A 포위 구조",example:"ὁ λόγος ὁ σός — 당신의 그 말씀"},
+    ],
+    tip:"문장 앞의 단어에 주목하면 저자의 강조점을 파악할 수 있습니다."
+  },
+];
+
+// ═══════════════════ SPEECH ═══════════════════
+function speakGreek(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "el-GR";
+  u.rate = 0.55;  // 느린 속도
+  u.pitch = 1.0;
+  window.speechSynthesis.speak(u);
+}
+
+// ═══════════════════ TABS ═══════════════════
+function switchTab(id) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const btns = document.querySelectorAll('.tab-btn');
+  const order = ['alphabet','flashcard','quiz','grammar'];
+  btns[order.indexOf(id)].classList.add('active');
+  if (id === 'quiz') generateQuiz();
+}
+
+// ═══════════════════ ALPHABET ═══════════════════
+let selectedAlpha = null;
+function buildAlphabet() {
+  const grid = document.getElementById('alpha-grid');
+  ALPHABET.forEach((item, i) => {
+    const parts = item.letter.split(' ');
+    const div = document.createElement('div');
+    div.className = 'alpha-card';
+    div.innerHTML = `
+      <span class="alpha-letter">${parts[0]}</span>
+      <span class="alpha-lower">${parts[1] || ''}</span>
+      <span class="alpha-name">${item.name}</span>
+      <button class="speak-btn speak-btn-sm" onclick="event.stopPropagation();speakGreek('${item.speakText}')">🔊</button>
+    `;
+    div.onclick = () => selectAlpha(i, div);
+    grid.appendChild(div);
+  });
+}
+
+function selectAlpha(i, el) {
+  document.querySelectorAll('.alpha-card').forEach(c => c.classList.remove('selected'));
+  const detail = document.getElementById('alpha-detail');
+  if (selectedAlpha === i) {
+    selectedAlpha = null;
+    detail.classList.remove('show');
+    return;
+  }
+  selectedAlpha = i;
+  el.classList.add('selected');
+  const a = ALPHABET[i];
+  detail.innerHTML = `
+    <div class="detail-header">
+      <span class="detail-letter">${a.letter}</span>
+      <div>
+        <div class="detail-title">${a.name} (${a.romanized})</div>
+        <div class="detail-sound">발음: <strong>${a.pron}</strong></div>
+      </div>
+      <button class="speak-btn" onclick="speakGreek('${a.speakText}')">🔊</button>
+    </div>
+    <div class="detail-example">
+      <span class="ex-greek">${a.example}</span>
+      <span class="ex-meaning">= ${a.exampleMeaning}</span>
+      <button class="speak-btn speak-btn-sm" onclick="speakGreek('${a.example}')">🔊</button>
+    </div>
+  `;
+  detail.classList.add('show');
+}
+
+// ═══════════════════ FLASHCARD ═══════════════════
+let fcCategory = '전체';
+let fcIndex = 0;
+let fcKnown = new Set();
+let fcFiltered = [...VOCABULARY];
+
+function currentCard() { return fcFiltered[fcIndex] || fcFiltered[0]; }
+
+function buildCategories() {
+  const cats = ['전체', ...new Set(VOCABULARY.map(v => v.category))];
+  const pills = document.getElementById('cat-pills');
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (c === '전체' ? ' active' : '');
+    btn.textContent = c;
+    btn.onclick = () => {
+      fcCategory = c;
+      fcIndex = 0;
+      fcFiltered = c === '전체' ? [...VOCABULARY] : VOCABULARY.filter(v => v.category === c);
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('flashcard').classList.remove('flipped');
+      updateCard();
+    };
+    pills.appendChild(btn);
+  });
+}
+
+function updateCard() {
+  const card = currentCard();
+  document.getElementById('card-greek').textContent = card.greek;
+  document.getElementById('card-kor').textContent = card.korean;
+  document.getElementById('card-eng').textContent = card.english;
+  document.getElementById('card-cat').textContent = card.category;
+  document.getElementById('card-freq').textContent = `NT 빈도: ${card.freq}회`;
+  const pct = Math.round(((fcIndex + 1) / fcFiltered.length) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = `${fcIndex + 1} / ${fcFiltered.length}`;
+  document.getElementById('known-count').textContent = `✓ 학습 완료: ${fcKnown.size} / ${fcFiltered.length}개`;
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+function nextCard() {
+  fcIndex = (fcIndex + 1) % fcFiltered.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  updateCard();
+}
+function prevCard() {
+  fcIndex = (fcIndex - 1 + fcFiltered.length) % fcFiltered.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+  updateCard();
+}
+function markKnown() {
+  fcKnown.add(currentCard().greek);
+  nextCard();
+}
+
+// ═══════════════════ QUIZ ═══════════════════
+let quizState = { correct: null, answered: false, score: { correct: 0, total: 0 } };
+
+function generateQuiz() {
+  const correct = VOCABULARY[Math.floor(Math.random() * VOCABULARY.length)];
+  const wrongs = VOCABULARY.filter(v => v.greek !== correct.greek)
+    .sort(() => Math.random() - 0.5).slice(0, 3);
+  const options = [...wrongs, correct].sort(() => Math.random() - 0.5);
+  quizState.correct = correct;
+  quizState.answered = false;
+
+  document.getElementById('quiz-greek').textContent = correct.greek;
+  document.getElementById('quiz-result').classList.remove('show','result-correct','result-wrong');
+
+  const optDiv = document.getElementById('quiz-options');
+  optDiv.innerHTML = '';
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.innerHTML = `${opt.korean}<span class="opt-eng">(${opt.english})</span>`;
+    btn.onclick = () => selectQuizOpt(opt, btn, options);
+    optDiv.appendChild(btn);
+  });
+}
+
+function selectQuizOpt(opt, btn, options) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const isCorrect = opt.greek === quizState.correct.greek;
+  quizState.score.total++;
+  if (isCorrect) quizState.score.correct++;
+
+  document.querySelectorAll('.quiz-opt').forEach((b, i) => {
+    b.disabled = true;
+    if (options[i].greek === quizState.correct.greek) b.classList.add('opt-correct');
+    else if (b === btn) b.classList.add('opt-wrong');
+  });
+
+  const res = document.getElementById('quiz-result');
+  const txt = document.getElementById('quiz-result-text');
+  res.classList.remove('result-correct','result-wrong');
+  res.classList.add('show', isCorrect ? 'result-correct' : 'result-wrong');
+  txt.textContent = isCorrect ? '🎉 정답!' : `❌ 오답 — 정답: ${quizState.correct.korean}`;
+
+  document.getElementById('score-num').textContent = quizState.score.correct;
+  document.getElementById('score-total').textContent = quizState.score.total;
+  document.getElementById('score-pct').textContent =
+    Math.round((quizState.score.correct / quizState.score.total) * 100) + '%';
+}
+
+// ═══════════════════ GRAMMAR ═══════════════════
+function buildGrammar() {
+  const list = document.getElementById('grammar-list');
+  GRAMMAR.forEach((g, i) => {
+    const item = document.createElement('div');
+    item.className = 'grammar-item' + (i === 0 ? ' open' : '');
+
+    let bodyHTML = `<p class="grammar-desc">${g.content}</p>`;
+
+    if (g.table) {
+      bodyHTML += `<div class="grammar-table-wrap"><table class="grammar-table">
+        <thead><tr>${g.table.headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+        <tbody>${g.table.rows.map(row =>
+          `<tr>${row.map((cell, j) =>
+            `<td class="${j === 0 ? 'td-label' : 'td-greek'}">${cell}</td>`
+          ).join('')}</tr>`
+        ).join('')}</tbody>
+      </table></div>`;
+    }
+
+    if (g.items) {
+      bodyHTML += `<div class="grammar-items-list">${g.items.map(it =>
+        `<div class="grammar-item-row">
+          <div class="item-name">${it.name}</div>
+          <div class="item-desc">${it.desc}</div>
+          <div class="item-example">${it.example}</div>
+        </div>`
+      ).join('')}</div>`;
+    }
+
+    bodyHTML += `<div class="grammar-tip">💡 ${g.tip}</div>`;
+
+    item.innerHTML = `
+      <button class="grammar-header" onclick="toggleGrammar(this)">
+        <span class="grammar-num">${String(i+1).padStart(2,'0')}</span>
+        <div>
+          <div class="grammar-title">${g.title}</div>
+          <div class="grammar-sub">${g.subtitle}</div>
+        </div>
+        <span class="grammar-arrow">${i === 0 ? '▲' : '▼'}</span>
+      </button>
+      <div class="grammar-body">${bodyHTML}</div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function toggleGrammar(btn) {
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.grammar-item').forEach(el => {
+    el.classList.remove('open');
+    el.querySelector('.grammar-arrow').textContent = '▼';
+  });
+  if (!isOpen) {
+    item.classList.add('open');
+    btn.querySelector('.grammar-arrow').textContent = '▲';
+  }
+}
+
+// ═══════════════════ INIT ═══════════════════
+buildAlphabet();
+buildCategories();
+updateCard();
+buildGrammar();
+generateQuiz();
+</script>
+</body>
+</html>
