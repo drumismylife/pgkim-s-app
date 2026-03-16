@@ -41,21 +41,26 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--cream);color:var(--n
 .sec-title{font-size:11px;font-weight:700;color:var(--gray);letter-spacing:1.5px;text-transform:uppercase;margin:18px 0 9px}
 .mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .mode-card{background:#fff;border-radius:14px;padding:15px 13px;cursor:pointer;box-shadow:var(--shadow);border:2px solid transparent;transition:border-color .2s,transform .15s;display:flex;flex-direction:column;gap:5px}
+.mode-card:hover{border-color:var(--gray-lt)}
 .mode-card:active{transform:scale(.97)}
-.mode-card.featured{grid-column:span 2;background:linear-gradient(120deg,var(--navy) 0%,var(--navy-mid) 100%)}
-.mode-icon{font-size:26px;line-height:1}
-.mode-name{font-size:13.5px;font-weight:700;color:var(--navy)}
-.mode-card.featured .mode-name{color:var(--gold-lt)}
-.mode-desc{font-size:10.5px;color:var(--gray);line-height:1.4}
-.mode-card.featured .mode-desc{color:rgba(255,255,255,.55)}
-.mode-badge{font-size:9.5px;font-weight:700;color:var(--gold);background:var(--gold-pale);padding:2px 7px;border-radius:20px;align-self:flex-start;margin-top:1px}
-.mode-card.featured .mode-badge{background:rgba(201,168,76,.2);color:var(--gold-lt)}
-.alpha-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.alpha-tile{background:#fff;border-radius:11px;padding:9px 5px;text-align:center;box-shadow:0 2px 8px rgba(27,42,74,.08);cursor:pointer;border:2px solid transparent;transition:all .15s}
+.mode-card.fc{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%)}
+.mode-card.qz{background:linear-gradient(135deg,#1a3a5c 0%,#234778 100%)}
+.mode-card.wr{background:linear-gradient(135deg,#1e3d2f 0%,#2a5440 100%)}
+.mode-card.mt{background:linear-gradient(135deg,#3d2a1a 0%,#5c3e25 100%)}
+.mode-icon{font-size:28px;line-height:1;margin-bottom:2px}
+.mode-name{font-size:13px;font-weight:700;color:#fff}
+.mode-desc{font-size:10px;color:rgba(255,255,255,.6);line-height:1.4}
+.mode-badge{font-size:9px;font-weight:700;color:var(--gold-lt);background:rgba(201,168,76,.18);padding:2px 8px;border-radius:20px;align-self:flex-start;margin-top:3px}
+.alpha-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px}
+.alpha-tile{background:#fff;border-radius:11px;padding:9px 5px;text-align:center;box-shadow:0 2px 8px rgba(27,42,74,.08);cursor:pointer;border:2px solid transparent;transition:all .15s;min-width:0}
+.alpha-tile:hover{border-color:var(--gold-lt);background:var(--gold-pale)}
 .alpha-tile:active{transform:scale(.95);border-color:var(--gold)}
-.alpha-tile .ac{font-family:'IM Fell English',serif;font-size:22px;color:var(--navy);line-height:1.1}
-.alpha-tile .an{font-size:8.5px;color:var(--gray);margin-top:1px}
-.alpha-tile .ap{font-size:9.5px;color:var(--accent);font-weight:600}
+.alpha-tile .ac{font-family:'IM Fell English',serif;font-size:clamp(16px,3vw,22px);color:var(--navy);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alpha-tile .an{font-size:clamp(7px,1.2vw,8.5px);color:var(--gray);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.alpha-tile .ap{font-size:clamp(8px,1.4vw,9.5px);color:var(--accent);font-weight:600}
+@media(max-width:400px){.alpha-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:560px){.alpha-grid{grid-template-columns:repeat(8,1fr)}}
+@media(min-width:700px){.alpha-grid{grid-template-columns:repeat(12,1fr)}}
 .verb-table{background:#fff;border-radius:13px;overflow:hidden;box-shadow:var(--shadow)}
 .verb-row{display:grid;grid-template-columns:72px 1fr 1fr;border-bottom:1px solid var(--gray-lt)}
 .verb-row:last-child{border-bottom:none}
@@ -173,7 +178,7 @@ canvas.wcanvas{display:block;background:#F8F6F2;border-radius:12px;border:2px so
 .mitem.matched{background:#E8F5EE;border-color:var(--green);color:var(--green);pointer-events:none;opacity:.7}
 .mitem.wflash{background:#FDECEC;border-color:var(--red);animation:flash .35s}
 @keyframes flash{0%,100%{opacity:1}50%{opacity:.4}}
-@media(min-width:480px){.alpha-grid{grid-template-columns:repeat(6,1fr)}.cgrk{font-size:62px}}
+@media(min-width:480px){.cgrk{font-size:62px}}
 </style>
 </head>
 <body>
@@ -198,15 +203,30 @@ canvas.wcanvas{display:block;background:#F8F6F2;border-radius:12px;border:2px so
     </div>
     <div class="sec-title">학습 모드</div>
     <div class="mode-grid">
-      <div class="mode-card featured" onclick="goTab('flashcard')">
+      <div class="mode-card fc" onclick="goTab('flashcard')">
         <div class="mode-icon">🃏</div>
-        <div class="mode-name">플래시카드 + 🔊 발음</div>
-        <div class="mode-desc">카드 탭으로 뒤집기 · 🔊 버튼으로 발음 재생</div>
-        <div class="mode-badge">알파벳 · 동사 · 명사 · 변화형 · 성경구절</div>
+        <div class="mode-name">플래시카드</div>
+        <div class="mode-desc">카드 뒤집기 · 🔊 발음 재생</div>
+        <div class="mode-badge">알파벳 · 어휘 · 변화형</div>
       </div>
-      <div class="mode-card" onclick="goTab('quiz')"><div class="mode-icon">📝</div><div class="mode-name">빈칸 퀴즈</div><div class="mode-desc">4지선다 + 동사변화형</div><div class="mode-badge">퀴즈</div></div>
-      <div class="mode-card" onclick="goTab('writing')"><div class="mode-icon">✏️</div><div class="mode-name">따라 쓰기</div><div class="mode-desc">손글씨 직접 연습</div><div class="mode-badge">필기</div></div>
-      <div class="mode-card" onclick="goTab('match')"><div class="mode-icon">🔗</div><div class="mode-name">매칭 게임</div><div class="mode-desc">헬라어 ↔ 뜻 연결</div><div class="mode-badge">매칭</div></div>
+      <div class="mode-card qz" onclick="goTab('quiz')">
+        <div class="mode-icon">📝</div>
+        <div class="mode-name">빈칸 퀴즈</div>
+        <div class="mode-desc">4지선다 · 동사 변화형</div>
+        <div class="mode-badge">퀴즈</div>
+      </div>
+      <div class="mode-card wr" onclick="goTab('writing')">
+        <div class="mode-icon">✏️</div>
+        <div class="mode-name">따라 쓰기</div>
+        <div class="mode-desc">손글씨 직접 연습</div>
+        <div class="mode-badge">필기 연습</div>
+      </div>
+      <div class="mode-card mt" onclick="goTab('match')">
+        <div class="mode-icon">🔗</div>
+        <div class="mode-name">매칭 게임</div>
+        <div class="mode-desc">헬라어 ↔ 뜻 연결</div>
+        <div class="mode-badge">매칭</div>
+      </div>
     </div>
     <div class="sec-title">알파벳 참조 (탭하면 발음 재생)</div>
     <div class="alpha-grid" id="alpha-ref"></div>
@@ -755,12 +775,34 @@ function onMC(idx,side,el){
 function resetMatch(){document.getElementById('mres').classList.remove('show');buildMatch();}
 
 // ── ALPHA REF ────────────────────────────────
+// 알파벳 음가 → TTS용 한국어 발음 매핑
+// koVoice로 음가(아/에/이 등)만 짧게 읽어줌
+const ALPHA_KO_SOUND = {
+  'Αα':'아','Ββ':'브','Γγ':'그','Δδ':'드','Εε':'에','Ζζ':'즈',
+  'Ηη':'에','Θθ':'스','Ιι':'이','Κκ':'크','Λλ':'르','Μμ':'므',
+  'Νν':'느','Ξξ':'크스','Οο':'오','Ππ':'프','Ρρ':'르','Σσ/ς':'스',
+  'Ττ':'트','Υυ':'위','Φφ':'프','Χχ':'크','Ψψ':'프스','Ωω':'오',
+};
+
+function speakAlphaTile(a){
+  // 1) 한국어 음가를 koVoice로 읽음
+  const koSound = ALPHA_KO_SOUND[a.g] || a.pron;
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(koSound);
+  if(koVoice) u.voice = koVoice;
+  u.lang = 'ko-KR';
+  u.rate = 0.85;
+  u.pitch = 1.0;
+  speechSynthesis.speak(u);
+}
+
 function buildAlphaRef(){
   const g=document.getElementById('alpha-ref');
   ALPHABET.forEach(a=>{
     const t=document.createElement('div');t.className='alpha-tile';
     t.innerHTML=`<div class="ac">${a.g}</div><div class="an">${a.name}</div><div class="ap">[${a.pron}]</div>`;
-    t.onclick=()=>speak(a.g,true);
+    t.onclick=()=>speakAlphaTile(a);
     g.appendChild(t);
   });
 }
