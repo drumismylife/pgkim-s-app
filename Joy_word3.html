@@ -83,6 +83,7 @@ body::before {
   font-size: 9px; color: var(--muted);
   font-family: 'Noto Sans KR', sans-serif;
 }
+
 .tw-letters { display: flex; gap: 2px; }
 .tl {
   width: 22px; height: 26px;
@@ -503,7 +504,7 @@ function clr(l) { return COLORS[l] || {bg:'#555',sh:'#333'}; }
 // ══════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════
-const SLOT_COUNT = 7;
+const SLOT_COUNT = 9;
 const WORDS_PER_STAGE = 4;
 
 let stageWords = [];
@@ -558,12 +559,12 @@ function renderTargets() {
       <div class="tw-letters">
         ${w.word.split('').map((_,ci) => `<div class="tl" id="tl-${wi}-${ci}">·</div>`).join('')}
       </div>
+
     </div>`).join('');
 }
 
 // 각 단어의 다음 차례 글자 칸에 next 클래스 표시
 function updateNextIndicators() {
-  // 기존 next 클래스 제거
   document.querySelectorAll('.tl.next').forEach(el => el.classList.remove('next'));
   stageWords.forEach((w, wi) => {
     if (completedWords.has(w.word)) return;
@@ -571,6 +572,7 @@ function updateNextIndicators() {
     if (nextCI === -1) return;
     const el = document.getElementById(`tl-${wi}-${nextCI}`);
     el?.classList.add('next');
+
   });
 }
 
@@ -716,9 +718,8 @@ function checkTriple() {
       const targetWordIdx = getNextWordForLetter(letter);
 
       if (targetWordIdx === -1) {
-        // 아직 차례가 아닌 글자 — 터지지 않음, 슬롯에 유지
-        // 단, 슬롯 꽉참 체크는 해야 함
-        break;
+        // 이 글자는 아직 차례 아님 — 다른 글자 트리플 계속 체크
+        continue;
       }
 
       const trio = idxs.slice(0, 3);
@@ -753,16 +754,16 @@ function checkTriple() {
 }
 
 // 이 글자가 "다음 차례"인 단어 인덱스 반환. 없으면 -1
-// 각 단어에서 _filled가 false인 첫 번째 위치의 글자 = 다음 차례
+// 각 단어 독립적으로 체크 — 어느 단어든 다음 글자가 letter이면 해당 단어 인덱스 반환
 function getNextWordForLetter(letter) {
   for (let wi = 0; wi < stageWords.length; wi++) {
     const w = stageWords[wi];
     if (completedWords.has(w.word)) continue;
     const nextCI = w._filled.findIndex(f => !f);
     if (nextCI === -1) continue;
-    if (w.word[nextCI] === letter) return wi;
+    if (w.word[nextCI] === letter) return wi; // 이 단어의 다음 글자가 letter
   }
-  return -1;
+  return -1; // 어떤 단어도 지금 이 글자가 차례 아님
 }
 
 // ══════════════════════════════════════════════
@@ -948,7 +949,14 @@ function useHint() {
     setTimeout(() => {
       // TTS 발음
       const u = new SpeechSynthesisUtterance(w.word.toLowerCase());
-      u.lang = 'en-US'; u.rate = 0.78; u.pitch = 1.1;
+      u.lang = 'en-US'; u.rate = 0.8; u.pitch = 1.0; u.volume = 1.0;
+      // 영어 여성 음성 우선 선택 (더 또렷함)
+      const voices = speechSynthesis.getVoices();
+      const preferred = voices.find(v => v.lang === 'en-US' && v.name.includes('Samantha'))
+        || voices.find(v => v.lang === 'en-US' && v.name.includes('Female'))
+        || voices.find(v => v.lang === 'en-US')
+        || voices.find(v => v.lang.startsWith('en'));
+      if (preferred) u.voice = preferred;
       speechSynthesis.speak(u);
 
       // 단어 카드 강조
